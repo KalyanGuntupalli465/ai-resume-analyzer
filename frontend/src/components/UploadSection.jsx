@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import API from "../services/api";
 
@@ -14,16 +13,18 @@ function UploadSection() {
 
   const [loading, setLoading] = useState(false);
 
+
   const handleSubmit = async () => {
 
     if (!file) {
       alert("Please upload a PDF resume.");
       return;
     }
+
     if (!jobDescription.trim()) {
-  alert("Please enter a job description.");
-  return;
-}
+      alert("Please enter a job description.");
+      return;
+    }
 
     try {
 
@@ -34,6 +35,7 @@ function UploadSection() {
       formData.append("file", file);
 
       formData.append("job_description", jobDescription);
+
 
       const [analyzeResponse, jdMatchResponse] =
         await Promise.all([
@@ -60,6 +62,7 @@ function UploadSection() {
 
         ]);
 
+
       setResult(analyzeResponse.data.data);
 
       setJdMatchResult(jdMatchResponse.data.data);
@@ -68,7 +71,11 @@ function UploadSection() {
 
       console.error(error);
 
-      alert("Something went wrong");
+      alert(
+        error?.response?.data?.detail ||
+        error.message ||
+        "Something went wrong"
+      );
 
     } finally {
 
@@ -79,9 +86,11 @@ function UploadSection() {
 
 
   return (
+
     <div className="min-h-screen bg-gray-100 py-10 px-4">
 
       <div className="max-w-6xl mx-auto">
+
 
         {/* Header */}
         <div className="text-center mb-10">
@@ -91,7 +100,7 @@ function UploadSection() {
           </h1>
 
           <p className="text-gray-600 text-lg">
-            Upload your resume and have AI-assisted resume analysis with ATS scoring and job fit insights.
+            AI-assisted resume analysis with ATS scoring and job fit insights.
           </p>
 
         </div>
@@ -100,7 +109,7 @@ function UploadSection() {
         {/* Upload Section */}
         <div className="bg-white shadow-xl rounded-3xl p-8 mb-10">
 
-          {/* Upload */}
+          {/* File Upload */}
           <div className="mb-6">
 
             <label className="block mb-2 font-semibold text-gray-700">
@@ -151,8 +160,10 @@ function UploadSection() {
 
           <div className="space-y-8">
 
-            {/* Top Score Cards */}
+
+            {/* Top Cards */}
             <div className="grid md:grid-cols-2 gap-6">
+
 
               {/* ATS Score */}
               <div className="bg-white shadow-xl rounded-3xl p-8 border border-gray-100">
@@ -162,7 +173,7 @@ function UploadSection() {
                 </h2>
 
                 <div className="text-7xl font-bold text-blue-600 mb-4">
-                  {result.ats_result.overall_score}
+                  {result?.ats_result?.overall_score || 0}
                 </div>
 
                 <p className="text-gray-500 leading-7">
@@ -172,32 +183,29 @@ function UploadSection() {
               </div>
 
 
-              {/* JD Match Score */}
-              {jdMatchResult && (
+              {/* Job Match Score */}
+              <div className="bg-white shadow-xl rounded-3xl p-8 border border-gray-100">
 
-                <div className="bg-white shadow-xl rounded-3xl p-8 border border-gray-100">
+                <h2 className="text-xl font-bold text-gray-700 mb-4">
+                  Job Match Score
+                </h2>
 
-                  <h2 className="text-xl font-bold text-gray-700 mb-4">
-                    Job Match Score
-                  </h2>
-
-                  <div className="text-7xl font-bold text-green-600 mb-4">
-                    {jdMatchResult?.jd_match?.jd_match?.match_summary}%
-                  </div>
-
-                  <p className="text-gray-500 leading-7">
-                    AI-powered resume and job description compatibility analysis.
-                  </p>
-
+                <div className="text-7xl font-bold text-green-600 mb-4">
+                  {jdMatchResult?.jd_match?.jd_match?.match_score || 0}%
                 </div>
 
-              )}
+                <p className="text-gray-500 leading-7">
+                  AI-powered resume and job description compatibility analysis.
+                </p>
+
+              </div>
 
             </div>
 
 
-            {/* Skills Section */}
+            {/* Skills */}
             <div className="grid md:grid-cols-2 gap-6">
+
 
               {/* Matched Skills */}
               <div className="bg-white shadow-lg rounded-3xl p-6">
@@ -208,13 +216,15 @@ function UploadSection() {
 
                 <div className="flex flex-wrap gap-3">
 
-                  {result.ats_result.matched_skills.map((skill, index) => (
+                  {result?.ats_result?.matched_skills?.map((skill, index) => (
+
                     <span
                       key={index}
                       className="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium"
                     >
                       {skill}
                     </span>
+
                   ))}
 
                 </div>
@@ -231,13 +241,15 @@ function UploadSection() {
 
                 <div className="flex flex-wrap gap-3">
 
-                  {result.ats_result.missing_skills.map((skill, index) => (
+                  {result?.ats_result?.missing_skills?.map((skill, index) => (
+
                     <span
                       key={index}
                       className="bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium"
                     >
                       {skill}
                     </span>
+
                   ))}
 
                 </div>
@@ -248,7 +260,7 @@ function UploadSection() {
 
 
             {/* AI Feedback */}
-            {result.llm_analysis.success && (
+            {result?.llm_analysis?.success && (
 
               <div className="bg-white shadow-lg rounded-3xl p-8">
 
@@ -257,7 +269,7 @@ function UploadSection() {
                 </h2>
 
                 <p className="text-gray-700 leading-8 mb-8 text-lg">
-                  {result.llm_analysis.analysis.overall_feedback}
+                  {result?.llm_analysis?.analysis?.overall_feedback}
                 </p>
 
                 <div>
@@ -268,14 +280,16 @@ function UploadSection() {
 
                   <ul className="space-y-4">
 
-                    {result.llm_analysis.analysis.improvements.map(
+                    {result?.llm_analysis?.analysis?.improvements?.map(
                       (item, index) => (
+
                         <li
                           key={index}
                           className="bg-gray-50 rounded-2xl p-5"
                         >
                           • {item}
                         </li>
+
                       )
                     )}
 
@@ -289,7 +303,7 @@ function UploadSection() {
 
 
             {/* JD Match Analysis */}
-            {jdMatchResult && (
+            {jdMatchResult?.jd_match?.jd_match && (
 
               <div className="bg-white shadow-lg rounded-3xl p-8">
 
@@ -315,6 +329,7 @@ function UploadSection() {
                 {/* Strong Matches + Gaps */}
                 <div className="grid md:grid-cols-2 gap-8 mb-10">
 
+
                   {/* Strong Matches */}
                   <div>
 
@@ -324,14 +339,16 @@ function UploadSection() {
 
                     <div className="space-y-4">
 
-                      {jdMatchResult?.jd_match?.jd_match?.strong_matches.map(
+                      {jdMatchResult?.jd_match?.jd_match?.strong_matches?.map(
                         (item, index) => (
+
                           <div
                             key={index}
                             className="bg-green-50 border border-green-100 rounded-2xl p-5"
                           >
                             ✓ {item}
                           </div>
+
                         )
                       )}
 
@@ -349,14 +366,16 @@ function UploadSection() {
 
                     <div className="space-y-4">
 
-                      {jdMatchResult?.jd_match?.jd_match?.gaps.map(
+                      {jdMatchResult?.jd_match?.jd_match?.gaps?.map(
                         (item, index) => (
+
                           <div
                             key={index}
                             className="bg-red-50 border border-red-100 rounded-2xl p-5"
                           >
                             ✗ {item}
                           </div>
+
                         )
                       )}
 
@@ -390,14 +409,16 @@ function UploadSection() {
 
                   <ul className="space-y-4">
 
-                    {jdMatchResult?.jd_match?.jd_match?.tailoring_tips.map(
+                    {jdMatchResult?.jd_match?.jd_match?.tailoring_tips?.map(
                       (tip, index) => (
+
                         <li
                           key={index}
                           className="bg-gray-50 rounded-2xl p-5"
                         >
                           • {tip}
                         </li>
+
                       )
                     )}
 
@@ -416,8 +437,8 @@ function UploadSection() {
       </div>
 
     </div>
+
   );
 }
 
 export default UploadSection;
-
