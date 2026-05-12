@@ -182,7 +182,7 @@ function UploadSection() {
                   </h2>
 
                   <div className="text-7xl font-bold text-green-600 mb-4">
-                    {jdMatchResult.jd_match.jd_match.match_score}%
+                    {jdMatchResult?.jd_match?.jd_match?.match_summary}%
                   </div>
 
                   <p className="text-gray-500 leading-7">
@@ -306,7 +306,7 @@ function UploadSection() {
                   </h3>
 
                   <p className="text-gray-700 leading-8 text-lg">
-                    {jdMatchResult.jd_match.jd_match.match_summary}
+                    {jdMatchResult?.jd_match?.jd_match?.match_summary}
                   </p>
 
                 </div>
@@ -324,7 +324,7 @@ function UploadSection() {
 
                     <div className="space-y-4">
 
-                      {jdMatchResult.jd_match.jd_match.strong_matches.map(
+                      {jdMatchResult?.jd_match?.jd_match?.strong_matches.map(
                         (item, index) => (
                           <div
                             key={index}
@@ -349,7 +349,7 @@ function UploadSection() {
 
                     <div className="space-y-4">
 
-                      {jdMatchResult.jd_match.jd_match.gaps.map(
+                      {jdMatchResult?.jd_match?.jd_match?.gaps.map(
                         (item, index) => (
                           <div
                             key={index}
@@ -375,7 +375,7 @@ function UploadSection() {
                   </h3>
 
                   <div className="bg-blue-50 border border-blue-100 rounded-3xl p-6 text-gray-700 leading-8 text-lg">
-                    {jdMatchResult.jd_match.jd_match.recommendation}
+                    {jdMatchResult?.jd_match?.jd_match?.recommendation}
                   </div>
 
                 </div>
@@ -390,7 +390,7 @@ function UploadSection() {
 
                   <ul className="space-y-4">
 
-                    {jdMatchResult.jd_match.jd_match.tailoring_tips.map(
+                    {jdMatchResult?.jd_match?.jd_match?.tailoring_tips.map(
                       (tip, index) => (
                         <li
                           key={index}
