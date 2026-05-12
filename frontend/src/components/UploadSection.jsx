@@ -20,6 +20,10 @@ function UploadSection() {
       alert("Please upload a PDF resume.");
       return;
     }
+    if (!jobDescription.trim()) {
+  alert("Please enter a job description.");
+  return;
+}
 
     try {
 
@@ -64,7 +68,7 @@ function UploadSection() {
 
       console.error(error);
 
-      alert("please write job description.");
+      alert("Something went wrong");
 
     } finally {
 
